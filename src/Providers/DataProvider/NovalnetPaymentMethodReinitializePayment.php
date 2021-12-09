@@ -60,7 +60,8 @@ class NovalnetPaymentMethodReinitializePayment
           }
         }
     }
-      
+      $paymentHelper->logger('order', $order);
+    
       // Changed payment method key
        $paymentKey = $paymentHelper->getPaymentKeyByMop($mopId);
        $paymentName = $paymentHelper->getCustomizedTranslatedText('template_' . strtolower($paymentKey));
