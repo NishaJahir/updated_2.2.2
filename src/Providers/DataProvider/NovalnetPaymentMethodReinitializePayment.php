@@ -61,6 +61,12 @@ class NovalnetPaymentMethodReinitializePayment
         }
     }
       $paymentHelper->logger('order', $order);
+    // Get the proper order amount even the system currency and payment currency differ
+    foreach($order['amounts'] as $orderamount) {
+        $paymentHelper->logger('orderamount', $orderamount);
+        $orderAmount = $orderamount['invoiceTotal'];
+    }
+    $paymentHelper->logger('orderamount123', $orderAmount);
     
       // Changed payment method key
        $paymentKey = $paymentHelper->getPaymentKeyByMop($mopId);
