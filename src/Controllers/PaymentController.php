@@ -142,7 +142,10 @@ class PaymentController extends Controller
         $responseData['amount']    = $this->paymentHelper->decodeData($responseData['amount'], $responseData['uniqid']) / 100;
         $sessionPaymentRequestData = $this->sessionStorage->getPlugin()->getValue('nnPaymentDataUpdated');
         $paymentRequestData = !empty($sessionPaymentRequestData) ? array_merge($sessionPaymentRequestData, $responseData) : $responseData;
-        
+        if ($isPaymentSuccess && isset($paymentRequestData['data']['pan_hash'])) {
+            $this->getLogger(__METHOD__)->error('redirect req', $paymentRequestData);
+            unset($paymentRequestData['data']['pan_hash']);
+        }
         $this->sessionStorage->getPlugin()->setValue('nnPaymentData', $paymentRequestData);
         $this->paymentService->validateResponse();
        
