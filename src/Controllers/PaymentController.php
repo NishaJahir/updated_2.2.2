@@ -130,6 +130,7 @@ class PaymentController extends Controller
      */
     public function paymentResponse() {
         $responseData = $this->request->all();
+        $lang = $this->sessionStorage->getLocaleSettings()->language;
         $isPaymentSuccess = isset($responseData['status']) && in_array($responseData['status'], ['90','100']);
         $notificationMessage = $this->paymentHelper->getNovalnetStatusText($responseData);
         if ($isPaymentSuccess) {
@@ -149,7 +150,7 @@ class PaymentController extends Controller
         $this->sessionStorage->getPlugin()->setValue('nnPaymentData', $paymentRequestData);
         $this->paymentService->validateResponse();
        
-        return $this->response->redirectTo('confirmation');
+        return $this->response->redirectTo($lang . '/confirmation');
     }
 
     /**
@@ -159,6 +160,7 @@ class PaymentController extends Controller
     public function processPayment()
     {
         $requestData = $this->request->all();
+        $lang = $this->sessionStorage->getLocaleSettings()->language;
         $notificationMessage = $this->paymentHelper->getNovalnetStatusText($requestData);
         $basket = $this->basketRepository->load();  
         $billingAddressId = !empty($basket->customerInvoiceAddressId) ? $basket->customerInvoiceAddressId : $requestData['nn_billing_addressid'];
@@ -187,7 +189,7 @@ class PaymentController extends Controller
         if (empty($serverRequestData['data']['first_name']) && empty($serverRequestData['data']['last_name'])) {
         $notificationMessage = $this->paymentHelper->getTranslatedText('nn_first_last_name_error');
                 $this->paymentService->pushNotification($notificationMessage, 'error', 100);
-                return $this->response->redirectTo('checkout');
+                return $this->response->redirectTo($lang . '/checkout');
         }
         
         $guarantee_payments = [ 'NOVALNET_SEPA', 'NOVALNET_INVOICE'];        
@@ -203,9 +205,9 @@ class PaymentController extends Controller
                 $this->sessionStorage->getPlugin()->setValue('nnPaymentUrl',$serverRequestData['url']);
                 $this->paymentService->pushNotification($notificationMessage, 'success', 100);
                 if(!empty($requestData['nn_reinit'])) {
-                    return $this->response->redirectTo('payment/novalnet/redirectPayment');
+                    return $this->response->redirectTo($lang . '/payment/novalnet/redirectPayment');
                 } else {
-                    return $this->response->redirectTo('place-order');
+                    return $this->response->redirectTo($lang . '/place-order');
                 }
             }
         }
@@ -234,7 +236,7 @@ class PaymentController extends Controller
                 {
                     $notificationMessage = $this->paymentHelper->getTranslatedText('dobinvalid');
                     $this->paymentService->pushNotification($notificationMessage, 'error', 100);
-                    return $this->response->redirectTo('checkout');
+                    return $this->response->redirectTo($lang . '/checkout');
                 }
 
                     // Guarantee Params Formation 
@@ -259,10 +261,10 @@ class PaymentController extends Controller
         if(!empty($requestData['nn_reinit'])) {
             $this->paymentService->paymentCalltoNovalnetServer();
             $this->paymentService->validateResponse();
-            return $this->response->redirectTo('confirmation');
+            return $this->response->redirectTo($lang . '/confirmation');
             
         } else {
-            return $this->response->redirectTo('place-order');
+            return $this->response->redirectTo($lang . '/place-order');
         }
     }
 
@@ -273,6 +275,7 @@ class PaymentController extends Controller
     public function redirectPayment()
     {        
         $paymentRequestData = $this->sessionStorage->getPlugin()->getValue('nnPaymentData');
+        $lang = $this->sessionStorage->getLocaleSettings()->language;
         $orderNo = $this->sessionStorage->getPlugin()->getValue('nnOrderNo');
         $paymentRequestData['order_no'] = $orderNo;
         $paymentUrl = $this->sessionStorage->getPlugin()->getValue('nnPaymentUrl');
@@ -285,7 +288,7 @@ class PaymentController extends Controller
                                                                 'nnPaymentUrl' => $paymentUrl
                                    ]);
         } else {            
-            return $this->response->redirectTo('confirmation');
+            return $this->response->redirectTo($lang . '/confirmation');
           }
     }
     
