@@ -573,7 +573,8 @@ class PaymentService
      */
     private function getReturnPageUrl()
     {
-        return $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/payment/novalnet/paymentResponse/';
+        $this->getLogger(__METHOD__)->error('shop root', $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl);
+        return $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/de/payment/novalnet/paymentResponse/';
     }
 
     /**
@@ -593,7 +594,7 @@ class PaymentService
     */
     public function getRedirectPaymentUrl()
     {
-        return $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/payment/novalnet/redirectPayment/';
+        return $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/de/payment/novalnet/redirectPayment/';
     }
     
     /**
