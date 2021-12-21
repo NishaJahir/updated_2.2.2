@@ -584,6 +584,7 @@ class PaymentService
     */
     public function getProcessPaymentUrl()
     {
+        $lang = $this->sessionStorage->getLocaleSettings()->language;
         return $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $lang . '/payment/novalnet/processPayment/';
     }
 
@@ -594,6 +595,7 @@ class PaymentService
     */
     public function getRedirectPaymentUrl()
     {
+        $lang = $this->sessionStorage->getLocaleSettings()->language;
         return $this->webstoreHelper->getCurrentWebstoreConfiguration()->domainSsl . '/' . $lang . '/payment/novalnet/redirectPayment/';
     }
     
